@@ -47,7 +47,19 @@ public class TetrisGame
         CurrentPiece = GetRandomPiece();
         NextPiece = GetRandomPiece();
         HeldPiece = null;
-        CurrentPosition = new Point(GridWidth / 2 - CurrentPiece.Width / 2, 0);
+        if (CurrentPiece != null)
+        {
+            if (CurrentPiece != null)
+            {
+                if (CurrentPiece != null)
+                {
+                    if (CurrentPiece != null)
+                    {
+                        CurrentPosition = new Point(GridWidth / 2 - CurrentPiece.Width / 2, 0);
+                    }
+                }
+            }
+        }
         CanHold = true;
     }
     
@@ -73,7 +85,7 @@ public class TetrisGame
     {
         var newPosition = new Point(CurrentPosition.X + deltaX, CurrentPosition.Y + deltaY);
         
-        if (IsValidPosition(CurrentPiece.Shape, newPosition.X, newPosition.Y))
+        if (CurrentPiece != null && IsValidPosition(CurrentPiece.Shape, (int)newPosition.X, (int)newPosition.Y))
         {
             CurrentPosition = newPosition;
             return true;
@@ -83,13 +95,14 @@ public class TetrisGame
     
     public void RotatePiece(bool clockwise = true)
     {
+        if (CurrentPiece == null) return;
         var rotatedPiece = CurrentPiece.Clone();
         rotatedPiece.Rotate(clockwise);
         
         for (int i = 0; i < 5; i++)
         {
             int offsetX = GetWallKickOffset(i, rotatedPiece.Width);
-            if (IsValidPosition(rotatedPiece.Shape, CurrentPosition.X + offsetX, CurrentPosition.Y))
+            if (IsValidPosition(rotatedPiece.Shape, (int)(CurrentPosition.X + offsetX), (int)CurrentPosition.Y))
             {
                 CurrentPiece = rotatedPiece;
                 CurrentPosition = new Point(CurrentPosition.X + offsetX, CurrentPosition.Y);
@@ -140,7 +153,10 @@ public class TetrisGame
     private Tetromino GetRandomPiece()
     {
         var values = Enum.GetValues(typeof(Tetromino.TetrominoType));
-        return new Tetromino((Tetromino.TetrominoType)values.GetValue(_random.Next(values.Length)));
+        var randomValue = values.GetValue(_random.Next(values.Length));
+        if (randomValue == null)
+            throw new InvalidOperationException("Failed to retrieve a random Tetromino type.");
+        return new Tetromino((Tetromino.TetrominoType)randomValue);
     }
     
     private bool IsValidPosition(int[,] shape, int x, int y)
@@ -166,14 +182,15 @@ public class TetrisGame
     
     private void LockPiece()
     {
+        if (CurrentPiece == null) return;
         for (int y = 0; y < CurrentPiece.Height; y++)
         {
             for (int x = 0; x < CurrentPiece.Width; x++)
             {
                 if (CurrentPiece.Shape[x, y] != 0)
                 {
-                    int boardX = CurrentPosition.X + x;
-                    int boardY = CurrentPosition.Y + y;
+                    int boardX = (int)CurrentPosition.X + x;
+                    int boardY = (int)CurrentPosition.Y + y;
                     
                     if (boardY >= 0)
                     {
@@ -186,7 +203,7 @@ public class TetrisGame
         int lines = ClearLines();
         UpdateScore(lines);
         
-        if (!IsValidPosition(NextPiece.Shape, GridWidth / 2 - NextPiece.Width / 2, 0))
+        if (NextPiece == null || !IsValidPosition(NextPiece.Shape, GridWidth / 2 - NextPiece.Width / 2, 0))
         {
             IsGameOver = true;
             GameOver?.Invoke(this, EventArgs.Empty);
