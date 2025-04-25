@@ -18,7 +18,9 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         // InitializeComponent må kalles først
-        InitializeComponent();
+        //InitializeComponent();
+
+        
         
         // Finn Canvas-kontrollen
         _gameCanvas = this.Find<Canvas>("GameCanvas") ?? 
