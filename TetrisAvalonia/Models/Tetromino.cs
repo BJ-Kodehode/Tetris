@@ -27,13 +27,13 @@ public class Tetromino
     
     private static readonly Dictionary<TetrominoType, Color> Colors = new()
     {
-        { TetrominoType.I, Color.FromRgb(0, 255, 255) },    // Cyan
-        { TetrominoType.O, Color.FromRgb(255, 255, 0) },     // Yellow
-        { TetrominoType.T, Color.FromRgb(128, 0, 128) },     // Purple
-        { TetrominoType.S, Color.FromRgb(0, 255, 0) },       // Green
-        { TetrominoType.Z, Color.FromRgb(255, 0, 0) },       // Red
-        { TetrominoType.J, Color.FromRgb(0, 0, 255) },        // Blue
-        { TetrominoType.L, Color.FromRgb(255, 165, 0) }       // Orange
+        { TetrominoType.I, Color.FromRgb(0, 255, 255) },
+        { TetrominoType.O, Color.FromRgb(255, 255, 0) },
+        { TetrominoType.T, Color.FromRgb(128, 0, 128) },
+        { TetrominoType.S, Color.FromRgb(0, 255, 0) },
+        { TetrominoType.Z, Color.FromRgb(255, 0, 0) },
+        { TetrominoType.J, Color.FromRgb(0, 0, 255) },
+        { TetrominoType.L, Color.FromRgb(255, 165, 0) }
     };
     
     public Tetromino(TetrominoType type)

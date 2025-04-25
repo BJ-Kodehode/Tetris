@@ -15,11 +15,6 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-
-        void InitializeComponent()
-        {
-            AvaloniaXamlLoader.Load(this);
-        }
         DataContext = new MainWindowViewModel();
         
         _game = new TetrisGame();
@@ -37,13 +32,14 @@ public partial class MainWindow : Window
 
     private void GameTick(object? sender, EventArgs e)
     {
+        if (sender == null) return;
         _game.UpdateGame(16);
         InvalidateVisual();
     }
 
     private void HandleInput(object? sender, KeyEventArgs e)
     {
-        if (_game.IsGameOver) return;
+        if (_game == null || _game.IsGameOver || e == null) return;
         
         switch (e.Key)
         {
