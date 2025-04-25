@@ -19,7 +19,6 @@ public class MainWindowViewModel : ReactiveObject
         _game = new TetrisGame();
         _game.StartNewGame();
         
-        // Initialize commands
         RotateCommand = ReactiveCommand.Create(() => _game.RotatePiece());
         MoveLeftCommand = ReactiveCommand.Create(() => _game.MovePiece(-1, 0));
         MoveRightCommand = ReactiveCommand.Create(() => _game.MovePiece(1, 0));

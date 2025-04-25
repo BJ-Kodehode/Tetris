@@ -36,5 +36,36 @@ public class Tetromino
         { TetrominoType.L, Color.FromRgb(255, 165, 0) }       // Orange
     };
     
-    // Resten av koden...
+    public Tetromino(TetrominoType type)
+    {
+        Type = type;
+        Shape = (int[,])Shapes[type].Clone();
+        Color = Colors[type];
+    }
+    
+    public void Rotate(bool clockwise = true)
+    {
+        var rotated = new int[Height, Width];
+        
+        for (int y = 0; y < Height; y++)
+        {
+            for (int x = 0; x < Width; x++)
+            {
+                if (clockwise)
+                    rotated[y, Width - 1 - x] = Shape[x, y];
+                else
+                    rotated[Height - 1 - y, x] = Shape[x, y];
+            }
+        }
+        
+        Shape = rotated;
+    }
+    
+    public Tetromino Clone()
+    {
+        return new Tetromino(Type)
+        {
+            Shape = (int[,])Shape.Clone()
+        };
+    }
 }
