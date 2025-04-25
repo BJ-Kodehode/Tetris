@@ -13,18 +13,26 @@ public partial class MainWindow : Window
 {
     private readonly TetrisGame _game;
     private readonly DispatcherTimer _gameTimer;
-    private readonly Canvas _gameCanvas;
+    private Canvas _gameCanvas;
 
     public MainWindow()
     {
-        // InitializeComponent må kalles først
-        //InitializeComponent();
-
+        InitializeComponent();
         
+        // Alternativ 1: Bruk this.Get<Canvas>("GameCanvas")
+        _gameCanvas = this.Get<Canvas>("GameCanvas");
         
-        // Finn Canvas-kontrollen
-        _gameCanvas = this.Find<Canvas>("GameCanvas") ?? 
-            throw new InvalidOperationException("GameCanvas not found");
+        // Alternativ 2: Hvis du foretrekker try-catch
+        /*
+        try {
+            _gameCanvas = this.FindControl<Canvas>("GameCanvas") ?? 
+                throw new InvalidOperationException("GameCanvas not found");
+        }
+        catch (Exception ex) {
+            Console.WriteLine($"Error finding GameCanvas: {ex.Message}");
+            throw;
+        }
+        */
         
         DataContext = new MainWindowViewModel();
         
