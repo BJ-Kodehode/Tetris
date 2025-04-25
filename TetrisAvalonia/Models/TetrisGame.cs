@@ -30,8 +30,8 @@ public class TetrisGame
     private double _accumulatedTime;
     private bool _isHardDropping;
 
-    private const double MinFallInterval = 50; // Fix: Extracted magic number as a constant
-    private static readonly int[] WallKickOffsets = { 0, -1, 1, -2, 2 }; // Fix: Improved wall kick offsets
+    private const double MinFallInterval = 50;
+    private static readonly int[] WallKickOffsets = { 0, -1, 1, -2, 2 };
 
     public TetrisGame()
     {
@@ -99,7 +99,7 @@ public class TetrisGame
         var rotatedPiece = CurrentPiece.Clone();
         rotatedPiece.Rotate(clockwise);
         
-        for (int i = 0; i < WallKickOffsets.Length; i++) // Fix: Use WallKickOffsets array
+        for (int i = 0; i < WallKickOffsets.Length; i++)
         {
             int offsetX = WallKickOffsets[i];
             if (IsValidPosition(rotatedPiece.Shape, (int)(CurrentPosition.X + offsetX), (int)CurrentPosition.Y))
@@ -137,16 +137,11 @@ public class TetrisGame
         CanHold = false;
     }
     
-    private int GetWallKickOffset(int attempt, int pieceWidth)
-    {
-        return attempt >= 0 && attempt < WallKickOffsets.Length ? WallKickOffsets[attempt] : 0;
-    }
-    
     private Tetromino GetRandomPiece()
     {
         var values = Enum.GetValues(typeof(Tetromino.TetrominoType));
         var randomValue = values.GetValue(_random.Next(values.Length));
-        if (randomValue == null) // Fix: Null check for unboxing
+        if (randomValue == null)
         {
             throw new InvalidOperationException("Failed to retrieve a valid TetrominoType.");
         }
@@ -164,7 +159,7 @@ public class TetrisGame
                 int boardX = x + px;
                 int boardY = y + py;
                 
-                if (boardX < 0 || boardX >= GridWidth || boardY >= GridHeight || boardY < 0) // Fix: Added check for boardY < 0
+                if (boardX < 0 || boardX >= GridWidth || boardY >= GridHeight || boardY < 0)
                     return false;
                     
                 if (boardY >= 0 && Grid[boardX, boardY] != 0)
@@ -176,7 +171,7 @@ public class TetrisGame
     
     private void LockPiece()
     {
-        if (CurrentPiece == null || NextPiece == null) return; // Fix: Null check for CurrentPiece and NextPiece
+        if (CurrentPiece == null || NextPiece == null) return;
         
         for (int y = 0; y < CurrentPiece.Height; y++)
         {
@@ -274,7 +269,7 @@ public class TetrisGame
     
     private double CalculateFallInterval()
     {
-        return Math.Max(50, 1000 - (Level - 1) * 50);
+        return Math.Max(MinFallInterval, 1000 - (Level - 1) * 50);
     }
     
     private void SpawnNewPiece()
