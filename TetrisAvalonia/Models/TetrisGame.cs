@@ -281,4 +281,17 @@ public class TetrisGame
         CurrentPosition = new Point(GridWidth / 2 - CurrentPiece.Width / 2, 0);
         CanHold = true;
     }
+    // I TetrisGame.cs
+public Point GetShadowPosition()
+{
+    if (CurrentPiece == null) return CurrentPosition;
+    
+    Point shadowPosition = CurrentPosition;
+    while (IsValidPosition(CurrentPiece.Shape, (int)shadowPosition.X, (int)shadowPosition.Y + 1))
+    {
+        shadowPosition = new Point(shadowPosition.X, shadowPosition.Y + 1);
+    }
+    return shadowPosition;
+}
+
 }

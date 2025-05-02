@@ -11,6 +11,7 @@ public class Tetromino
     public TetrominoType Type { get; }
     public int[,] Shape { get; private set; }
     public Color Color { get; }
+    public Color ShadowColor { get; }
     public int Width => Shape.GetLength(0);
     public int Height => Shape.GetLength(1);
     
@@ -27,13 +28,24 @@ public class Tetromino
     
     private static readonly Dictionary<TetrominoType, Color> Colors = new()
     {
-        { TetrominoType.I, Color.FromRgb(0, 255, 255) },
-        { TetrominoType.O, Color.FromRgb(255, 255, 0) },
-        { TetrominoType.T, Color.FromRgb(128, 0, 128) },
-        { TetrominoType.S, Color.FromRgb(0, 255, 0) },
-        { TetrominoType.Z, Color.FromRgb(255, 0, 0) },
-        { TetrominoType.J, Color.FromRgb(0, 0, 255) },
-        { TetrominoType.L, Color.FromRgb(255, 165, 0) }
+        { TetrominoType.I, Color.FromRgb(0, 255, 255) },    // Cyan
+        { TetrominoType.O, Color.FromRgb(255, 255, 0) },     // Yellow
+        { TetrominoType.T, Color.FromRgb(128, 0, 128) },     // Purple
+        { TetrominoType.S, Color.FromRgb(0, 255, 0) },       // Green
+        { TetrominoType.Z, Color.FromRgb(255, 0, 0) },       // Red
+        { TetrominoType.J, Color.FromRgb(0, 0, 255) },       // Blue
+        { TetrominoType.L, Color.FromRgb(255, 165, 0) }      // Orange
+    };
+
+    private static readonly Dictionary<TetrominoType, Color> ShadowColors = new()
+    {
+        { TetrominoType.I, Color.FromRgb(0, 150, 150) },    // Darker Cyan
+        { TetrominoType.O, Color.FromRgb(150, 150, 0) },     // Darker Yellow
+        { TetrominoType.T, Color.FromRgb(80, 0, 80) },       // Darker Purple
+        { TetrominoType.S, Color.FromRgb(0, 150, 0) },       // Darker Green
+        { TetrominoType.Z, Color.FromRgb(150, 0, 0) },       // Darker Red
+        { TetrominoType.J, Color.FromRgb(0, 0, 150) },       // Darker Blue
+        { TetrominoType.L, Color.FromRgb(150, 82, 0) }       // Darker Orange
     };
     
     public Tetromino(TetrominoType type)
@@ -41,6 +53,7 @@ public class Tetromino
         Type = type;
         Shape = (int[,])Shapes[type].Clone();
         Color = Colors[type];
+        ShadowColor = ShadowColors[type];
     }
     
     public void Rotate(bool clockwise = true)
