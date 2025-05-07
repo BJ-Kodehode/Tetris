@@ -203,6 +203,40 @@ public partial class MainWindow : Window
     {
         _gameTimer.Stop();
 
+        // Prompt for player name
+        var nameDialog = new Window
+        {
+            Title = "Enter Your Name",
+            Width = 300,
+            Height = 150
+        };
+
+        var nameTextBox = new TextBox { Width = 200, Margin = new Thickness(10) };
+        var okButton = new Button
+        {
+            Content = "OK",
+            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+            Command = ReactiveUI.ReactiveCommand.Create(() => Dispatcher.UIThread.InvokeAsync(() => nameDialog.Close()))
+        };
+
+        nameDialog.Content = new StackPanel
+        {
+            Children =
+            {
+                new TextBlock { Text = "Enter your name:", HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center, Margin = new Thickness(0, 20, 0, 10) },
+                nameTextBox,
+                okButton
+            }
+        };
+
+        await nameDialog.ShowDialog(this);
+
+        string playerName = nameTextBox.Text ?? "Anonymous";
+
+        // Save highscore
+        HighscoreManager.AddHighscore(playerName, _game.Score);
+
+        // Show game over dialog
         var dialog = new Window
         {
             Title = "Game Over",

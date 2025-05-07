@@ -3,7 +3,7 @@
         xmlns:vm="using:TetrisAvalonia.ViewModels"
         x:Class="TetrisAvalonia.Views.MainWindow"
         Title="Tetris with Avalonia"
-        Width="400" Height="700">
+        Width="650" Height="950">
         
     <Design.DataContext>
         <vm:MainWindowViewModel/>
