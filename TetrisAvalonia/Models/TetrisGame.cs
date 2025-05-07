@@ -9,6 +9,7 @@ namespace TetrisAvalonia.Models;
 public class TetrisGame
 {
     public event EventHandler? GameOver;
+    // The event 'LinesCleared' is declared but not used. Consider removing it if unnecessary.
     public event EventHandler<int>? LinesCleared;
     public event EventHandler<int>? ScoreUpdated;
     
@@ -191,8 +192,8 @@ public class TetrisGame
             }
         }
         
-        int lines = ClearLines();
-        UpdateScore(lines);
+        OptimizeClearLines();
+        UpdateScore(TotalLines);
         
         if (!IsValidPosition(NextPiece.Shape, GridWidth / 2 - NextPiece.Width / 2, 0))
         {
@@ -202,14 +203,14 @@ public class TetrisGame
         }
     }
     
-    private int ClearLines()
+    private void OptimizeClearLines()
     {
-        int linesCleared = 0;
-        
+        int targetRow = GridHeight - 1;
+
         for (int y = GridHeight - 1; y >= 0; y--)
         {
             bool lineComplete = true;
-            
+
             for (int x = 0; x < GridWidth; x++)
             {
                 if (Grid[x, y] == 0)
@@ -218,34 +219,33 @@ public class TetrisGame
                     break;
                 }
             }
-            
-            if (lineComplete)
+
+            if (!lineComplete)
             {
-                linesCleared++;
-                
-                for (int ny = y; ny > 0; ny--)
+                if (targetRow != y)
                 {
                     for (int x = 0; x < GridWidth; x++)
                     {
-                        Grid[x, ny] = Grid[x, ny - 1];
+                        Grid[x, targetRow] = Grid[x, y];
                     }
                 }
-                
-                for (int x = 0; x < GridWidth; x++)
-                {
-                    Grid[x, 0] = 0;
-                }
-                
-                y++;
+                targetRow--;
             }
         }
-        
+
+        int linesCleared = GridHeight - 1 - targetRow;
         if (linesCleared > 0)
         {
             LinesCleared?.Invoke(this, linesCleared);
         }
-        
-        return linesCleared;
+
+        for (int y = targetRow; y >= 0; y--)
+        {
+            for (int x = 0; x < GridWidth; x++)
+            {
+                Grid[x, y] = 0;
+            }
+        }
     }
     
     private void UpdateScore(int linesCleared)
@@ -283,17 +283,27 @@ public class TetrisGame
         CurrentPosition = new Point(GridWidth / 2 - CurrentPiece.Width / 2, 0);
         CanHold = true;
     }
-    // I TetrisGame.cs
-public Point GetShadowPosition()
-{
-    if (CurrentPiece == null) return CurrentPosition;
-    
-    Point shadowPosition = CurrentPosition;
-    while (IsValidPosition(CurrentPiece.Shape, (int)shadowPosition.X, (int)shadowPosition.Y + 1))
-    {
-        shadowPosition = new Point(shadowPosition.X, shadowPosition.Y + 1);
-    }
-    return shadowPosition;
-}
 
+    public Point GetShadowPosition()
+    {
+        if (CurrentPiece == null) return CurrentPosition;
+
+        int low = (int)CurrentPosition.Y;
+        int high = GridHeight;
+
+        while (low < high)
+        {
+            int mid = (low + high) / 2;
+            if (IsValidPosition(CurrentPiece.Shape, (int)CurrentPosition.X, mid))
+            {
+                low = mid + 1;
+            }
+            else
+            {
+                high = mid;
+            }
+        }
+
+        return new Point(CurrentPosition.X, low - 1);
+    }
 }

@@ -6,8 +6,10 @@ using Avalonia.Controls.Shapes;
 using Avalonia.Threading;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using TetrisAvalonia.Models;
 using TetrisAvalonia.ViewModels;
+using TetrisAvalonia.Utilities;
 
 namespace TetrisAvalonia.Views;
 
@@ -154,71 +156,44 @@ public partial class MainWindow : Window
         }
     }
 
-    private void RenderShadow()
+    private void RenderBlocks(IEnumerable<Rectangle> blocks, Point position, int[,] shape, Color color)
     {
-        if (_game?.CurrentPiece == null) return;
-
-        Point shadowPosition = _game.GetShadowPosition();
         int blockIndex = 0;
 
-        for (int x = 0; x < _game.CurrentPiece.Width; x++)
+        for (int x = 0; x < shape.GetLength(0); x++)
         {
-            for (int y = 0; y < _game.CurrentPiece.Height; y++)
+            for (int y = 0; y < shape.GetLength(1); y++)
             {
-                if (_game.CurrentPiece.Shape[x, y] > 0 && blockIndex < _shadowBlocks.Count)
+                if (shape[x, y] > 0 && blockIndex < blocks.Count())
                 {
-                    var shadow = _shadowBlocks[blockIndex];
-                    shadow.Fill = new SolidColorBrush(_game.CurrentPiece.ShadowColor);
-                    shadow.Stroke = new SolidColorBrush(_game.CurrentPiece.ShadowColor);
-                    shadow.IsVisible = true;
-                    
-                    Canvas.SetLeft(shadow, (shadowPosition.X + x) * 30);
-                    Canvas.SetTop(shadow, (shadowPosition.Y + y) * 30);
-                    
+                    var block = blocks.ElementAt(blockIndex);
+                    block.Fill = new SolidColorBrush(color);
+                    block.IsVisible = true;
+
+                    Canvas.SetLeft(block, (position.X + x) * Constants.CellSize);
+                    Canvas.SetTop(block, (position.Y + y) * Constants.CellSize);
+
                     blockIndex++;
                 }
             }
         }
+    }
+
+    private void RenderShadow()
+    {
+        if (_game?.CurrentPiece == null) return;
+        RenderBlocks(_shadowBlocks, _game.GetShadowPosition(), _game.CurrentPiece.Shape, _game.CurrentPiece.ShadowColor);
     }
 
     private void RenderCurrentPiece()
     {
-        if (_game?.CurrentPiece == null) return; // Null-sjekk
-
-        int blockIndex = 0;
-
-        for (int x = 0; x < _game.CurrentPiece.Width; x++)
-        {
-            for (int y = 0; y < _game.CurrentPiece.Height; y++)
-            {
-                if (_game.CurrentPiece.Shape[x, y] > 0 && blockIndex < _pieceBlocks.Count)
-                {
-                    var block = _pieceBlocks[blockIndex];
-                    block.Fill = new SolidColorBrush(_game.CurrentPiece.Color);
-                    block.IsVisible = true;
-                    
-                    Canvas.SetLeft(block, (_game.CurrentPosition.X + x) * 30);
-                    Canvas.SetTop(block, (_game.CurrentPosition.Y + y) * 30);
-                    
-                    blockIndex++;
-                }
-            }
-        }
+        if (_game?.CurrentPiece == null) return;
+        RenderBlocks(_pieceBlocks, _game.CurrentPosition, _game.CurrentPiece.Shape, _game.CurrentPiece.Color);
     }
 
     private static IBrush GetBrush(int value)
     {
-        return value switch
-        {
-            1 => Brushes.Cyan,
-            2 => Brushes.Yellow,
-            3 => Brushes.Purple,
-            4 => Brushes.Green,
-            5 => Brushes.Red,
-            6 => Brushes.Blue,
-            7 => Brushes.Orange,
-            _ => Brushes.Transparent
-        };
+        return BrushMapper.GetBrush(value);
     }
 
     private async void OnGameOver(object? sender, EventArgs e)

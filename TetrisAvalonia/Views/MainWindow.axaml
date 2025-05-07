@@ -11,14 +11,18 @@
     
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="2*"/>
         </Grid.RowDefinitions>
 
-        <!-- Highscore List -->
-        <ListBox Grid.Row="0" x:Name="HighscoreList" Background="LightGray" Margin="10"/>
+        <!-- Added a header for better UI structure -->
+        <TextBlock Grid.Row="0" Text="Tetris Game" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" Margin="10"/>
 
-        <!-- Game Canvas -->
-        <Canvas Grid.Row="1" x:Name="GameCanvas" Width="300" Height="600" Background="Black"/>
+        <!-- Adjusted Highscore List layout -->
+        <ListBox Grid.Row="1" x:Name="HighscoreList" Background="LightGray" Margin="10" Height="200"/>
+
+        <!-- Game Canvas remains unchanged -->
+        <Canvas Grid.Row="2" x:Name="GameCanvas" Width="300" Height="600" Background="Black"/>
     </Grid>
 </Window>

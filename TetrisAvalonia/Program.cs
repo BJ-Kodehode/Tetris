@@ -1,4 +1,5 @@
 ﻿using Avalonia;
+using Avalonia.Skia;
 using System;
 
 namespace TetrisAvalonia;
@@ -12,6 +13,7 @@ internal class Program
     public static AppBuilder BuildAvaloniaApp()
         => AppBuilder.Configure<App>()
             .UsePlatformDetect()
+            .UseSkia() // Explicitly use Skia as the rendering backend
             .WithInterFont()
             .LogToTrace();
 }

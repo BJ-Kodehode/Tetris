@@ -37,16 +37,9 @@ public class MainWindowViewModel : ReactiveObject
 
     private SolidColorBrush GetBrush(int value)
     {
-        // Example implementation: Map grid values to colors
-        return value switch
-        {
-            1 => new SolidColorBrush(Colors.Red),
-            2 => new SolidColorBrush(Colors.Blue),
-            3 => new SolidColorBrush(Colors.Green),
-            4 => new SolidColorBrush(Colors.Yellow),
-            _ => new SolidColorBrush(Colors.Black) // Default color
-        };
+        return (SolidColorBrush)BrushMapper.GetBrush(value);
     }
+
     private void RenderGame()
     {
         _gameCanvas.Children.Clear();

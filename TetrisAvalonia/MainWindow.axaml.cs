@@ -1,4 +1,6 @@
 using Avalonia.Controls;
+using System.Linq;
+using TetrisAvalonia.Utilities;
 
 namespace TetrisAvalonia;
 

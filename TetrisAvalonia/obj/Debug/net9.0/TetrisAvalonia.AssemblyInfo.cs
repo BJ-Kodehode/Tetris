@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TetrisAvalonia")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3af7d4d1a6400e1e7b7ba3f3d4478376a51de299")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fd749a8e32f0c0e62799cfd15a7a305ebff539c8")]
 [assembly: System.Reflection.AssemblyProductAttribute("TetrisAvalonia")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TetrisAvalonia")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
