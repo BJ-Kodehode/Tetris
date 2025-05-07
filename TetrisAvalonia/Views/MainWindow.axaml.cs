@@ -30,6 +30,7 @@ public partial class MainWindow : Window
         DataContext = new MainWindowViewModel();
         _game = new TetrisGame();
         _game.StartNewGame();
+        _game.GameOver += OnGameOver;
 
         // Opprett blokker for skygge og brikke på forhånd
         InitializeBlockCache();
@@ -154,31 +155,31 @@ public partial class MainWindow : Window
     }
 
     private void RenderShadow()
-{
-    if (_game?.CurrentPiece == null) return;
-
-    Point shadowPosition = _game.GetShadowPosition();
-    int blockIndex = 0;
-
-    for (int x = 0; x < _game.CurrentPiece.Width; x++)
     {
-        for (int y = 0; y < _game.CurrentPiece.Height; y++)
+        if (_game?.CurrentPiece == null) return;
+
+        Point shadowPosition = _game.GetShadowPosition();
+        int blockIndex = 0;
+
+        for (int x = 0; x < _game.CurrentPiece.Width; x++)
         {
-            if (_game.CurrentPiece.Shape[x, y] > 0 && blockIndex < _shadowBlocks.Count)
+            for (int y = 0; y < _game.CurrentPiece.Height; y++)
             {
-                var shadow = _shadowBlocks[blockIndex];
-                shadow.Fill = new SolidColorBrush(_game.CurrentPiece.ShadowColor);
-                shadow.Stroke = new SolidColorBrush(_game.CurrentPiece.ShadowColor);
-                shadow.IsVisible = true;
-                
-                Canvas.SetLeft(shadow, (shadowPosition.X + x) * 30);
-                Canvas.SetTop(shadow, (shadowPosition.Y + y) * 30);
-                
-                blockIndex++;
+                if (_game.CurrentPiece.Shape[x, y] > 0 && blockIndex < _shadowBlocks.Count)
+                {
+                    var shadow = _shadowBlocks[blockIndex];
+                    shadow.Fill = new SolidColorBrush(_game.CurrentPiece.ShadowColor);
+                    shadow.Stroke = new SolidColorBrush(_game.CurrentPiece.ShadowColor);
+                    shadow.IsVisible = true;
+                    
+                    Canvas.SetLeft(shadow, (shadowPosition.X + x) * 30);
+                    Canvas.SetTop(shadow, (shadowPosition.Y + y) * 30);
+                    
+                    blockIndex++;
+                }
             }
         }
     }
-}
 
     private void RenderCurrentPiece()
     {
@@ -218,5 +219,33 @@ public partial class MainWindow : Window
             7 => Brushes.Orange,
             _ => Brushes.Transparent
         };
+    }
+
+    private async void OnGameOver(object? sender, EventArgs e)
+    {
+        _gameTimer.Stop();
+
+        var dialog = new Window
+        {
+            Title = "Game Over",
+            Width = 300,
+            Height = 150
+        };
+
+        dialog.Content = new StackPanel
+        {
+            Children =
+            {
+                new TextBlock { Text = "Game Over!", HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center, Margin = new Thickness(0, 20, 0, 20) },
+                new Button
+                {
+                    Content = "OK",
+                    HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+                    Command = ReactiveUI.ReactiveCommand.Create(() => dialog.Close())
+                }
+            }
+        };
+
+        await dialog.ShowDialog(this);
     }
 }
