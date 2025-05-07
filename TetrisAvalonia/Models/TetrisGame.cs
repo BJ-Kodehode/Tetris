@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Media;
 using System;
 using System.Collections.Generic;
+using TetrisAvalonia.Utilities;
 
 namespace TetrisAvalonia.Models;
 
@@ -196,6 +197,7 @@ public class TetrisGame
         if (!IsValidPosition(NextPiece.Shape, GridWidth / 2 - NextPiece.Width / 2, 0))
         {
             IsGameOver = true;
+            HighscoreManager.AddHighscore("Player", Score); // Oppdaterer highscores
             GameOver?.Invoke(this, EventArgs.Empty);
         }
     }
