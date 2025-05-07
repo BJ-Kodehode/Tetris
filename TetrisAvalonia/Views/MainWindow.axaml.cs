@@ -7,6 +7,7 @@ using Avalonia.Threading;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Diagnostics;
 using TetrisAvalonia.Models;
 using TetrisAvalonia.ViewModels;
 using TetrisAvalonia.Utilities;
@@ -128,8 +129,10 @@ public partial class MainWindow : Window
         // Tegn grid
         for (int x = 0; x < TetrisGame.GridWidth; x++)
         {
+            Debug.WriteLine($"Rendering column {x}");
             for (int y = 0; y < TetrisGame.GridHeight; y++)
             {
+                Debug.WriteLine($"Rendering cell ({x}, {y})");
                 if (_game.Grid[x, y] > 0)
                 {
                     var block = new Rectangle

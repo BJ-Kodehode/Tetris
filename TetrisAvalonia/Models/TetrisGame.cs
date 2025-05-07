@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Media;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using TetrisAvalonia.Utilities;
 
 namespace TetrisAvalonia.Models;
@@ -116,7 +117,10 @@ public class TetrisGame
     public void HardDrop()
     {
         _isHardDropping = true;
-        while (MovePiece(0, 1)) { }
+        while (MovePiece(0, 1)) 
+        {
+            Debug.WriteLine("MovePiece executed");
+        }
     }
     
     public void HoldPiece()
@@ -293,6 +297,7 @@ public class TetrisGame
 
         while (low < high)
         {
+            Debug.WriteLine($"While loop: low={low}, high={high}");
             int mid = (low + high) / 2;
             if (IsValidPosition(CurrentPiece.Shape, (int)CurrentPosition.X, mid))
             {
