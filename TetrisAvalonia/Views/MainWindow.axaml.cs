@@ -21,6 +21,8 @@ public partial class MainWindow : Window
     private readonly Canvas _gameCanvas;
     private readonly List<Rectangle> _shadowBlocks = new();
     private readonly List<Rectangle> _pieceBlocks = new();
+    private int _score;
+    private readonly List<(string Name, int Score)> _highscores = new();
 
     public MainWindow()
     {
@@ -81,6 +83,7 @@ public partial class MainWindow : Window
         if (IsGameActive())
         {
             _game?.UpdateGame(16); // Null-sjekk
+            CheckAndClearRows();
             RenderGame();
         }
     }
@@ -199,6 +202,70 @@ public partial class MainWindow : Window
         return BrushMapper.GetBrush(value);
     }
 
+    private void UpdateScore(int points)
+    {
+        _score += points;
+        Debug.WriteLine($"Score updated: {_score}");
+    }
+
+    private void CheckAndClearRows()
+    {
+        for (int y = 0; y < TetrisGame.GridHeight; y++)
+        {
+            if (IsRowFull(y))
+            {
+                ClearRow(y);
+                UpdateScore(100); // Example: 100 points per cleared row
+            }
+        }
+    }
+
+    private bool IsRowFull(int row)
+    {
+        for (int x = 0; x < TetrisGame.GridWidth; x++)
+        {
+            if (_game.Grid[x, row] == 0)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void ClearRow(int row)
+    {
+        for (int y = row; y > 0; y--)
+        {
+            for (int x = 0; x < TetrisGame.GridWidth; x++)
+            {
+                _game.Grid[x, y] = _game.Grid[x, y - 1];
+            }
+        }
+        for (int x = 0; x < TetrisGame.GridWidth; x++)
+        {
+            _game.Grid[x, 0] = 0;
+        }
+    }
+
+    private void SaveHighscore(string playerName)
+    {
+        _highscores.Add((playerName, _score));
+        _highscores.Sort((a, b) => b.Score.CompareTo(a.Score));
+        if (_highscores.Count > 10) // Keep top 10 scores
+        {
+            _highscores.RemoveAt(_highscores.Count - 1);
+        }
+    }
+
+    private void DisplayHighscores()
+    {
+        var highscoreList = this.FindControl<ListBox>("HighscoreList");
+        if (highscoreList != null)
+        {
+            highscoreList.Items = _highscores.Select(h => $"{h.Name}: {h.Score}").ToList();
+        }
+    }
+
     private async void OnGameOver(object? sender, EventArgs e)
     {
         _gameTimer.Stop();
@@ -234,7 +301,8 @@ public partial class MainWindow : Window
         string playerName = nameTextBox.Text ?? "Anonymous";
 
         // Save highscore
-        HighscoreManager.AddHighscore(playerName, _game.Score);
+        SaveHighscore(playerName);
+        DisplayHighscores();
 
         // Show game over dialog
         var dialog = new Window
