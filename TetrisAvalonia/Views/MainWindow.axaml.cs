@@ -238,7 +238,7 @@ public partial class MainWindow : Window
                 {
                     Content = "OK",
                     HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                    Command = ReactiveUI.ReactiveCommand.Create(() => dialog.Close())
+                    Command = ReactiveUI.ReactiveCommand.Create(() => Dispatcher.UIThread.Post(() => dialog.Close()))
                 }
             }
         };

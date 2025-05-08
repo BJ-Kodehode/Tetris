@@ -8,6 +8,7 @@ using Avalonia.Media;
 using Avalonia;
 using System.Collections.ObjectModel;
 using TetrisAvalonia.Utilities;
+using Avalonia.Threading;
 
 namespace TetrisAvalonia.ViewModels;
 
@@ -29,10 +30,10 @@ public class MainWindowViewModel : ReactiveObject
 
         Highscores = new ObservableCollection<Highscore>(HighscoreManager.LoadHighscores());
 
-        RotateCommand = ReactiveCommand.Create(() => _game.RotatePiece());
-        MoveLeftCommand = ReactiveCommand.Create(() => _game.MovePiece(-1, 0));
-        MoveRightCommand = ReactiveCommand.Create(() => _game.MovePiece(1, 0));
-        DropCommand = ReactiveCommand.Create(() => _game.HardDrop());
+        RotateCommand = ReactiveCommand.Create(() => Dispatcher.UIThread.Post(() => _game.RotatePiece()));
+        MoveLeftCommand = ReactiveCommand.Create(() => Dispatcher.UIThread.Post(() => _game.MovePiece(-1, 0)));
+        MoveRightCommand = ReactiveCommand.Create(() => Dispatcher.UIThread.Post(() => _game.MovePiece(1, 0)));
+        DropCommand = ReactiveCommand.Create(() => Dispatcher.UIThread.Post(() => _game.HardDrop()));
     }
 
     private SolidColorBrush GetBrush(int value)
