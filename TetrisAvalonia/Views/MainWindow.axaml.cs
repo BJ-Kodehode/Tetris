@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TetrisAvalonia.Models;
 using TetrisAvalonia.ViewModels;
+using TetrisAvalonia.Utilities;
 
 namespace TetrisAvalonia.Views;
 
@@ -226,23 +227,27 @@ public partial class MainWindow : Window
         {
             Title = "Game Over",
             Width = 300,
-            Height = 150
+            Height = 200
         };
+
+        var nameTextBox = new TextBox { Watermark = "Enter your name", Margin = new Thickness(10) };
+        var okButton = new Button { Content = "OK", HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center };
+
+        okButton.Click += (s, args) => dialog.Close();
 
         dialog.Content = new StackPanel
         {
             Children =
             {
-                new TextBlock { Text = "Game Over!", HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center, Margin = new Thickness(0, 20, 0, 20) },
-                new Button
-                {
-                    Content = "OK",
-                    HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                    Command = ReactiveUI.ReactiveCommand.Create(() => Dispatcher.UIThread.Post(() => dialog.Close()))
-                }
+                new TextBlock { Text = "Game Over!", HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center, Margin = new Thickness(0, 20, 0, 10) },
+                nameTextBox,
+                okButton
             }
         };
 
         await dialog.ShowDialog(this);
+
+        var playerName = string.IsNullOrWhiteSpace(nameTextBox.Text) ? "Player" : nameTextBox.Text;
+        HighscoreManager.AddHighscore(playerName, _game.Score);
     }
 }
