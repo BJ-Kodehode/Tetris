@@ -116,11 +116,17 @@ public class TetrisGame
     
     public void HardDrop()
     {
-        _isHardDropping = true;
-        while (MovePiece(0, 1)) 
+        if (CurrentPiece == null) return;
+
+        int dropDistance = 0;
+        while (IsValidPosition(CurrentPiece.Shape, (int)CurrentPosition.X, (int)CurrentPosition.Y + dropDistance + 1))
         {
-            Debug.WriteLine("MovePiece executed");
+            dropDistance++;
         }
+
+        CurrentPosition = new Point(CurrentPosition.X, CurrentPosition.Y + dropDistance);
+        LockPiece();
+        SpawnNewPiece();
     }
     
     public void HoldPiece()
@@ -237,18 +243,19 @@ public class TetrisGame
             }
         }
 
-        int linesCleared = GridHeight - 1 - targetRow;
-        if (linesCleared > 0)
-        {
-            LinesCleared?.Invoke(this, linesCleared);
-        }
-
+        // Clear remaining rows above targetRow
         for (int y = targetRow; y >= 0; y--)
         {
             for (int x = 0; x < GridWidth; x++)
             {
                 Grid[x, y] = 0;
             }
+        }
+
+        int linesCleared = GridHeight - 1 - targetRow;
+        if (linesCleared > 0)
+        {
+            LinesCleared?.Invoke(this, linesCleared);
         }
     }
     

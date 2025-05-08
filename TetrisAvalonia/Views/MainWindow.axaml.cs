@@ -124,23 +124,36 @@ public partial class MainWindow : Window
         _shadowBlocks.ForEach(b => b.IsVisible = false);
         _pieceBlocks.ForEach(b => b.IsVisible = false);
 
-        // Tegn grid
+        // Gjenbruk eksisterende blokker for grid
+        int blockIndex = 0;
         for (int x = 0; x < TetrisGame.GridWidth; x++)
         {
             for (int y = 0; y < TetrisGame.GridHeight; y++)
             {
                 if (_game.Grid[x, y] > 0)
                 {
-                    var block = new Rectangle
+                    Rectangle block;
+                    if (blockIndex < _pieceBlocks.Count)
                     {
-                        Width = 30,
-                        Height = 30,
-                        Fill = GetBrush(_game.Grid[x, y]),
-                        Stroke = new SolidColorBrush(Colors.Gray) // Fiks for Pen til IBrush
-                    };
+                        block = _pieceBlocks[blockIndex];
+                    }
+                    else
+                    {
+                        block = new Rectangle
+                        {
+                            Width = 30,
+                            Height = 30,
+                            Stroke = new SolidColorBrush(Colors.Gray)
+                        };
+                        _pieceBlocks.Add(block);
+                        _gameCanvas.Children.Add(block);
+                    }
+
+                    block.Fill = GetBrush(_game.Grid[x, y]);
+                    block.IsVisible = true;
                     Canvas.SetLeft(block, x * 30);
                     Canvas.SetTop(block, y * 30);
-                    _gameCanvas.Children.Add(block);
+                    blockIndex++;
                 }
             }
         }
