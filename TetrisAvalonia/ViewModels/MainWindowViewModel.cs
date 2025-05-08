@@ -8,8 +8,6 @@ using Avalonia.Media;
 using Avalonia;
 using System.Collections.ObjectModel;
 using TetrisAvalonia.Utilities;
-using System.Diagnostics;
-using Avalonia.Threading;
 
 namespace TetrisAvalonia.ViewModels;
 
@@ -31,10 +29,10 @@ public class MainWindowViewModel : ReactiveObject
 
         Highscores = new ObservableCollection<Highscore>(HighscoreManager.LoadHighscores());
 
-        RotateCommand = ReactiveCommand.Create(() => Dispatcher.UIThread.InvokeAsync(() => _game.RotatePiece()));
-        MoveLeftCommand = ReactiveCommand.Create(() => Dispatcher.UIThread.InvokeAsync(() => _game.MovePiece(-1, 0)));
-        MoveRightCommand = ReactiveCommand.Create(() => Dispatcher.UIThread.InvokeAsync(() => _game.MovePiece(1, 0)));
-        DropCommand = ReactiveCommand.Create(() => Dispatcher.UIThread.InvokeAsync(() => _game.HardDrop()));
+        RotateCommand = ReactiveCommand.Create(() => _game.RotatePiece());
+        MoveLeftCommand = ReactiveCommand.Create(() => _game.MovePiece(-1, 0));
+        MoveRightCommand = ReactiveCommand.Create(() => _game.MovePiece(1, 0));
+        DropCommand = ReactiveCommand.Create(() => _game.HardDrop());
     }
 
     private SolidColorBrush GetBrush(int value)
@@ -49,10 +47,8 @@ public class MainWindowViewModel : ReactiveObject
         // Tegn grid
         for (int x = 0; x < TetrisGame.GridWidth; x++)
         {
-            Debug.WriteLine($"Processing column {x}");
             for (int y = 0; y < TetrisGame.GridHeight; y++)
             {
-                Debug.WriteLine($"Processing cell ({x}, {y})");
                 if (_game.Grid[x, y] > 0)
                 {
                     var block = new Rectangle
@@ -75,10 +71,8 @@ public class MainWindowViewModel : ReactiveObject
             Point shadowPosition = _game.GetShadowPosition();
             for (int x = 0; x < _game.CurrentPiece.Width; x++)
             {
-                Debug.WriteLine($"Processing shadow column {x}");
                 for (int y = 0; y < _game.CurrentPiece.Height; y++)
                 {
-                    Debug.WriteLine($"Processing shadow cell ({x}, {y})");
                     if (_game.CurrentPiece.Shape[x, y] > 0)
                     {
                         var shadow = new Rectangle
@@ -102,10 +96,8 @@ public class MainWindowViewModel : ReactiveObject
         {
             for (int x = 0; x < _game.CurrentPiece.Width; x++)
             {
-                Debug.WriteLine($"Processing current piece column {x}");
                 for (int y = 0; y < _game.CurrentPiece.Height; y++)
                 {
-                    Debug.WriteLine($"Processing current piece cell ({x}, {y})");
                     if (_game.CurrentPiece.Shape[x, y] > 0)
                     {
                         var block = new Rectangle

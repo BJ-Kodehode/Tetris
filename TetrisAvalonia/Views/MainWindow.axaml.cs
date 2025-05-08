@@ -7,10 +7,8 @@ using Avalonia.Threading;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Diagnostics;
 using TetrisAvalonia.Models;
 using TetrisAvalonia.ViewModels;
-using TetrisAvalonia.Utilities;
 
 namespace TetrisAvalonia.Views;
 
@@ -21,8 +19,6 @@ public partial class MainWindow : Window
     private readonly Canvas _gameCanvas;
     private readonly List<Rectangle> _shadowBlocks = new();
     private readonly List<Rectangle> _pieceBlocks = new();
-    private int _score;
-    private readonly List<(string Name, int Score)> _highscores = new();
 
     public MainWindow()
     {
@@ -83,7 +79,6 @@ public partial class MainWindow : Window
         if (IsGameActive())
         {
             _game?.UpdateGame(16); // Null-sjekk
-            CheckAndClearRows();
             RenderGame();
         }
     }
@@ -132,10 +127,8 @@ public partial class MainWindow : Window
         // Tegn grid
         for (int x = 0; x < TetrisGame.GridWidth; x++)
         {
-            Debug.WriteLine($"Rendering column {x}");
             for (int y = 0; y < TetrisGame.GridHeight; y++)
             {
-                Debug.WriteLine($"Rendering cell ({x}, {y})");
                 if (_game.Grid[x, y] > 0)
                 {
                     var block = new Rectangle
@@ -176,8 +169,8 @@ public partial class MainWindow : Window
                     block.Fill = new SolidColorBrush(color);
                     block.IsVisible = true;
 
-                    Canvas.SetLeft(block, (position.X + x) * Constants.CellSize);
-                    Canvas.SetTop(block, (position.Y + y) * Constants.CellSize);
+                    Canvas.SetLeft(block, (position.X + x) * 30); // Assuming 30 is the cell size
+                    Canvas.SetTop(block, (position.Y + y) * 30); // Assuming 30 is the cell size
 
                     blockIndex++;
                 }
@@ -199,112 +192,23 @@ public partial class MainWindow : Window
 
     private static IBrush GetBrush(int value)
     {
-        return BrushMapper.GetBrush(value);
-    }
-
-    private void UpdateScore(int points)
-    {
-        _score += points;
-        Debug.WriteLine($"Score updated: {_score}");
-    }
-
-    private void CheckAndClearRows()
-    {
-        for (int y = 0; y < TetrisGame.GridHeight; y++)
+        return value switch
         {
-            if (IsRowFull(y))
-            {
-                ClearRow(y);
-                UpdateScore(100); // Example: 100 points per cleared row
-            }
-        }
-    }
-
-    private bool IsRowFull(int row)
-    {
-        for (int x = 0; x < TetrisGame.GridWidth; x++)
-        {
-            if (_game.Grid[x, row] == 0)
-            {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private void ClearRow(int row)
-    {
-        for (int y = row; y > 0; y--)
-        {
-            for (int x = 0; x < TetrisGame.GridWidth; x++)
-            {
-                _game.Grid[x, y] = _game.Grid[x, y - 1];
-            }
-        }
-        for (int x = 0; x < TetrisGame.GridWidth; x++)
-        {
-            _game.Grid[x, 0] = 0;
-        }
-    }
-
-    private void SaveHighscore(string playerName)
-    {
-        _highscores.Add((playerName, _score));
-        _highscores.Sort((a, b) => b.Score.CompareTo(a.Score));
-        if (_highscores.Count > 10) // Keep top 10 scores
-        {
-            _highscores.RemoveAt(_highscores.Count - 1);
-        }
-    }
-
-    private void DisplayHighscores()
-    {
-        var highscoreList = this.FindControl<ListBox>("HighscoreList");
-        if (highscoreList != null)
-        {
-            highscoreList.Items = _highscores.Select(h => $"{h.Name}: {h.Score}").ToList();
-        }
+            1 => new SolidColorBrush(Colors.Red),
+            2 => new SolidColorBrush(Colors.Blue),
+            3 => new SolidColorBrush(Colors.Green),
+            4 => new SolidColorBrush(Colors.Yellow),
+            5 => new SolidColorBrush(Colors.Purple),
+            6 => new SolidColorBrush(Colors.Orange),
+            7 => new SolidColorBrush(Colors.Cyan),
+            _ => new SolidColorBrush(Colors.Transparent)
+        };
     }
 
     private async void OnGameOver(object? sender, EventArgs e)
     {
         _gameTimer.Stop();
 
-        // Prompt for player name
-        var nameDialog = new Window
-        {
-            Title = "Enter Your Name",
-            Width = 300,
-            Height = 150
-        };
-
-        var nameTextBox = new TextBox { Width = 200, Margin = new Thickness(10) };
-        var okButton = new Button
-        {
-            Content = "OK",
-            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-            Command = ReactiveUI.ReactiveCommand.Create(() => Dispatcher.UIThread.InvokeAsync(() => nameDialog.Close()))
-        };
-
-        nameDialog.Content = new StackPanel
-        {
-            Children =
-            {
-                new TextBlock { Text = "Enter your name:", HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center, Margin = new Thickness(0, 20, 0, 10) },
-                nameTextBox,
-                okButton
-            }
-        };
-
-        await nameDialog.ShowDialog(this);
-
-        string playerName = nameTextBox.Text ?? "Anonymous";
-
-        // Save highscore
-        SaveHighscore(playerName);
-        DisplayHighscores();
-
-        // Show game over dialog
         var dialog = new Window
         {
             Title = "Game Over",
@@ -321,7 +225,7 @@ public partial class MainWindow : Window
                 {
                     Content = "OK",
                     HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                    Command = ReactiveUI.ReactiveCommand.Create(() => Dispatcher.UIThread.InvokeAsync(() => dialog.Close()))
+                    Command = ReactiveUI.ReactiveCommand.Create(() => dialog.Close())
                 }
             }
         };
