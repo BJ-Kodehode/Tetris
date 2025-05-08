@@ -96,15 +96,19 @@ public partial class MainWindow : Window
         switch (e.Key)
         {
             case Key.Left:
+            case Key.A: // Add support for 'A' key
                 _game?.MovePiece(-1, 0); // Null-sjekk
                 break;
             case Key.Right:
+            case Key.D: // Add support for 'D' key
                 _game?.MovePiece(1, 0); // Null-sjekk
                 break;
             case Key.Up:
+            case Key.W: // Add support for 'W' key
                 _game?.RotatePiece(); // Null-sjekk
                 break;
             case Key.Down:
+            case Key.S: // Add support for 'S' key
                 _game?.MovePiece(0, 1); // Null-sjekk
                 break;
             case Key.Space:
