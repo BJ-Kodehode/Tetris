@@ -79,7 +79,7 @@ public partial class MainWindow : Window
         if (IsGameActive())
         {
             _game?.UpdateGame(16); // Null-sjekk
-            RenderGame();
+            Dispatcher.UIThread.Post(() => RenderGame());
         }
     }
 
@@ -113,7 +113,7 @@ public partial class MainWindow : Window
                 _game?.HoldPiece(); // Null-sjekk
                 break;
         }
-        RenderGame();
+        Dispatcher.UIThread.Post(() => RenderGame());
     }
 
     private void RenderGame()
