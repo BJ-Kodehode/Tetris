@@ -16,12 +16,19 @@ public class MainWindowViewModel : ReactiveObject
 {
     private readonly TetrisGame _game;
     private readonly Canvas _gameCanvas = new Canvas();
-    
+    private int _score;
+
     public ICommand RotateCommand { get; }
     public ICommand MoveLeftCommand { get; }
     public ICommand MoveRightCommand { get; }
     public ICommand DropCommand { get; }
     public ObservableCollection<Highscore> Highscores { get; }
+
+    public int Score
+    {
+        get => _score;
+        set => this.RaiseAndSetIfChanged(ref _score, value);
+    }
 
     public MainWindowViewModel()
     {
@@ -34,6 +41,11 @@ public class MainWindowViewModel : ReactiveObject
         MoveLeftCommand = ReactiveCommand.Create(() => Dispatcher.UIThread.Post(() => _game.MovePiece(-1, 0)));
         MoveRightCommand = ReactiveCommand.Create(() => Dispatcher.UIThread.Post(() => _game.MovePiece(1, 0)));
         DropCommand = ReactiveCommand.Create(() => Dispatcher.UIThread.Post(() => _game.HardDrop()));
+
+        _game.ScoreUpdated += (sender, newScore) =>
+        {
+            Score = newScore;
+        };
     }
 
     private SolidColorBrush GetBrush(int value)
