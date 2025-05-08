@@ -3,7 +3,7 @@
         xmlns:vm="using:TetrisAvalonia.ViewModels"
         x:Class="TetrisAvalonia.Views.MainWindow"
         Title="Tetris with Avalonia"
-        Width="400" Height="700">
+        Width="400" Height="900">
         
     <Design.DataContext>
         <vm:MainWindowViewModel/>
@@ -20,7 +20,7 @@
         <TextBlock Grid.Row="0" Text="Tetris Game" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" Margin="10"/>
 
         <!-- Adjusted Highscore List layout -->
-        <ListBox Grid.Row="1" x:Name="HighscoreList" Background="LightGray" Margin="10" Height="200"/>
+        <ListBox Grid.Row="1" x:Name="HighscoreList" Background="LightGray" Margin="10" Height="100"/>
 
         <!-- Game Canvas remains unchanged -->
         <Canvas Grid.Row="2" x:Name="GameCanvas" Width="300" Height="600" Background="Black"/>
