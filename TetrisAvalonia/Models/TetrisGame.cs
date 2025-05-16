@@ -219,6 +219,7 @@ public class TetrisGame
         if (!IsValidPosition(NextPiece.Shape, GridWidth / 2 - NextPiece.Width / 2, 0))
         {
             IsGameOver = true;
+            Console.WriteLine("Game over! Final score: " + Score);
             HighscoreManager.AddHighscore("Player", Score); // Oppdaterer highscores
             GameOver?.Invoke(this, EventArgs.Empty);
         }
@@ -270,6 +271,16 @@ public class TetrisGame
         {
             LinesCleared?.Invoke(this, linesCleared);
         }
+
+        Console.WriteLine("Grid after clearing lines:");
+        for (int y = 0; y < GridHeight; y++)
+        {
+            for (int x = 0; x < GridWidth; x++)
+            {
+                Console.Write(Grid[x, y] + " ");
+            }
+            Console.WriteLine();
+        }
     }
     
     private void UpdateScore(int linesCleared)
@@ -309,6 +320,16 @@ public class TetrisGame
         CanHold = true;
 
         Console.WriteLine("New piece spawned: " + CurrentPiece.Type);
+        Console.WriteLine("Current position: " + CurrentPosition);
+        Console.WriteLine("Grid after spawning new piece:");
+        for (int y = 0; y < GridHeight; y++)
+        {
+            for (int x = 0; x < GridWidth; x++)
+            {
+                Console.Write(Grid[x, y] + " ");
+            }
+            Console.WriteLine();
+        }
     }
 
     public Point GetShadowPosition()

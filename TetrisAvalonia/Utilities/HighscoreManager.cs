@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
@@ -13,11 +14,27 @@ namespace TetrisAvalonia.Utilities
         {
             if (!File.Exists(HighscoreFilePath))
             {
+                Console.WriteLine("Highscore file not found. Returning an empty list.");
                 return new List<Highscore>();
             }
 
             var json = File.ReadAllText(HighscoreFilePath);
-            return JsonSerializer.Deserialize<List<Highscore>>(json) ?? new List<Highscore>();
+
+            if (string.IsNullOrWhiteSpace(json))
+            {
+                Console.WriteLine("Highscore file is empty. Returning an empty list.");
+                return new List<Highscore>();
+            }
+
+            try
+            {
+                return JsonSerializer.Deserialize<List<Highscore>>(json) ?? new List<Highscore>();
+            }
+            catch (JsonException ex)
+            {
+                Console.WriteLine($"Failed to deserialize highscores: {ex.Message}. Returning an empty list.");
+                return new List<Highscore>();
+            }
         }
 
         public static void SaveHighscores(List<Highscore> highscores)
