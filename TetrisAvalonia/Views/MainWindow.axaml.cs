@@ -125,6 +125,8 @@ public partial class MainWindow : Window
     {
         if (_gameCanvas == null || _game == null) return; // Null-sjekk
 
+        Console.WriteLine("Rendering game...");
+
         // Skjul alle blokker først
         _shadowBlocks.ForEach(b => b.IsVisible = false);
         _pieceBlocks.ForEach(b => b.IsVisible = false);
@@ -171,6 +173,8 @@ public partial class MainWindow : Window
             // Tegn aktiv brikke
             RenderCurrentPiece();
         }
+
+        Console.WriteLine("Game rendered successfully.");
     }
 
     private void RenderBlocks(IEnumerable<Rectangle> blocks, Point position, int[,] shape, Color color)

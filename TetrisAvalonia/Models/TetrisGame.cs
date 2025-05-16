@@ -184,7 +184,8 @@ public class TetrisGame
     private void LockPiece()
     {
         if (CurrentPiece == null || NextPiece == null) return;
-        
+
+        Console.WriteLine("Locking piece at position: " + CurrentPosition);
         for (int y = 0; y < CurrentPiece.Height; y++)
         {
             for (int x = 0; x < CurrentPiece.Width; x++)
@@ -193,7 +194,7 @@ public class TetrisGame
                 {
                     int boardX = (int)CurrentPosition.X + x;
                     int boardY = (int)CurrentPosition.Y + y;
-                    
+
                     if (boardY >= 0)
                     {
                         Grid[boardX, boardY] = (int)CurrentPiece.Type + 1;
@@ -201,10 +202,20 @@ public class TetrisGame
                 }
             }
         }
-        
+
+        Console.WriteLine("Grid after locking piece:");
+        for (int y = 0; y < GridHeight; y++)
+        {
+            for (int x = 0; x < GridWidth; x++)
+            {
+                Console.Write(Grid[x, y] + " ");
+            }
+            Console.WriteLine();
+        }
+
         OptimizeClearLines();
         UpdateScore(TotalLines);
-        
+
         if (!IsValidPosition(NextPiece.Shape, GridWidth / 2 - NextPiece.Width / 2, 0))
         {
             IsGameOver = true;
@@ -217,6 +228,7 @@ public class TetrisGame
     {
         int targetRow = GridHeight - 1;
 
+        Console.WriteLine("Optimizing clear lines...");
         for (int y = GridHeight - 1; y >= 0; y--)
         {
             bool lineComplete = true;
@@ -253,6 +265,7 @@ public class TetrisGame
         }
 
         int linesCleared = GridHeight - 1 - targetRow;
+        Console.WriteLine($"Lines cleared: {linesCleared}");
         if (linesCleared > 0)
         {
             LinesCleared?.Invoke(this, linesCleared);
@@ -288,11 +301,14 @@ public class TetrisGame
     private void SpawnNewPiece()
     {
         if (NextPiece == null) return;
-        
+
+        Console.WriteLine("Spawning new piece...");
         CurrentPiece = NextPiece;
         NextPiece = GetRandomPiece();
         CurrentPosition = new Point(GridWidth / 2 - CurrentPiece.Width / 2, 0);
         CanHold = true;
+
+        Console.WriteLine("New piece spawned: " + CurrentPiece.Type);
     }
 
     public Point GetShadowPosition()
